@@ -1,5 +1,5 @@
 def registry = 'artifacts.trmc.osd.mil/minerva-docker'
-def base = 'es/extension-scaffold/es-home'
+def base = 'extension-scaffold/es-home'
 def trmc_image_version = params.TRMC_IMAGE_VERSION ? params.TRMC_IMAGE_VERSION : ""
 
 pipeline {
@@ -19,6 +19,7 @@ pipeline {
         branch "release*"
       }
       steps {
+        echo 'Checking release...'
         script {
           if (!env.VERSION_FROM_GIT_TAG) {
               error('Branch `release` does not refer to a tag')
@@ -30,6 +31,7 @@ pipeline {
     }
     stage('Build es-home container') {
       steps {
+        echo 'Building es-home container...'
         script {
           withCredentials([file(credentialsId: 'trmc-npmrc', variable: 'NPMRC')]) {
             def tag_image_ops = trmc_image_version.isEmpty() ? "" : ":${trmc_image_version}"
