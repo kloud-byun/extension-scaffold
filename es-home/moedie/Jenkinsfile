@@ -2,6 +2,7 @@
 def registry = 'artifacts.trmc.osd.mil/minerva-docker'
 def base = 'extension-scaffold/es-home'
 def trmc_image_version = params.TRMC_IMAGE_VERSION ? params.TRMC_IMAGE_VERSION : ""
+def script_dir = "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 pipeline {
     agent any
@@ -10,16 +11,7 @@ pipeline {
         stage('Build dc-ui container') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'trmc-npmrc', variable: 'NPMRC')]) {
-                        def tag_image_ops = trmc_image_version.isEmpty() ? "" : "-t ${registry}/moesol/${base}:${trmc_image_version}"
-                        sh """
-                        GIT_DESCRIBE=`git describe --tags --dirty`
-                        echo \${GIT_DESCRIBE}
-                        docker build -t extension-scaffold/es-home . -f Dockerfile \
-                        --build-arg GIT_DESCRIBE=\${GIT_DESCRIBE} \
-                        --build-arg NPMRC=\${NPMRC} ${tag_image_ops}
-                        """
-                    }
+                    sh "docker build -t es-home "$script_dir/.." -f "$script_dir/Dockerfile""
                 }
             }
         }
