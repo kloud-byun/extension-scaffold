@@ -8,7 +8,7 @@ pipeline {
             steps {
                 echo 'Building es-home container...'
                 script {
-                    docker.build('es-home')
+                    docker.build('es-home', '-f ../Dockerfile .')
                     docker.image('es-home').run('-p 8080:8080 --name test-es-home')
                 }
             }
