@@ -8,16 +8,16 @@ pipeline {
             steps {
                 echo 'Building es-home container...'
                 // script to build here ...
-                
+
             }
         }
-        stage('another testing'){
+        stage('built-in echo testing'){
             steps {
-                echo 'testing 222'
+                echo 'testing built-in echo...'
             }
         }
 
-        stage('testing echo'){
+        stage('shared-library testEcho'){
             steps {
                 testEcho()
             }
