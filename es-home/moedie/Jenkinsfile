@@ -7,13 +7,10 @@ pipeline {
     agent any
 
     stages {
-        stage('Build dc-ui container') {
+        stage('Build es-home container') {
             steps {
                 script {
-                    sh """
-                    script_dir = "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-                    docker build -t es-home "$script_dir/.." -f "$script_dir/Dockerfile"
-                    """
+                    sh "docker build -t es-home \"\$WORKSPACE\" -f \"\$WORKSPACE/Dockerfile\""
                 }
             }
         }
