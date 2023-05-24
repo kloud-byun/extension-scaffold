@@ -4,23 +4,22 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Build es-home container') {
             steps {
-                testEcho()
+                echo 'Building es-home container...'
+                // script to build here ...
+                
             }
         }
-
-        stage('test2'){
-
+        stage('another testing'){
             steps {
                 echo 'testing 222'
             }
         }
 
-        stage('test3'){
-
+        stage('testing echo'){
             steps {
-                echo 'testing 333'
+                testEcho()
             }
         }
     }
