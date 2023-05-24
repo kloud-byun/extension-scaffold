@@ -7,8 +7,10 @@ pipeline {
         stage('Build es-home container') {
             steps {
                 echo 'Building es-home container...'
-                // script to build here ...
-
+                script {
+                    sh 'docker build -t es-home .'
+                    sh 'docker run -p 8080:8080 -d --name test-es-home es-home'
+                }
             }
         }
         stage('built-in echo testing'){
