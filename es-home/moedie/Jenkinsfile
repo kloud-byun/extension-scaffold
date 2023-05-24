@@ -1,26 +1,26 @@
+@Library('es-jenkins') _
+
 pipeline {
     agent any
-    
+
     stages {
-
-        stage('Check Release'){
-
+        stage('Build') {
             steps {
-                echo 'checking the release...'
+                build()
             }
         }
 
-        stage('Build es-home container'){
+        stage('test2'){
 
             steps {
-                echo 'building the application...'
+                echo 'testing 222'
             }
         }
 
-        stage('Deploy on dev26'){
+        stage('test3'){
 
             steps {
-                echo 'building the application...'
+                echo 'testing 333'
             }
         }
     }
