@@ -2,7 +2,6 @@
 def registry = 'artifacts.trmc.osd.mil/minerva-docker'
 def base = 'extension-scaffold/es-home'
 def trmc_image_version = params.TRMC_IMAGE_VERSION ? params.TRMC_IMAGE_VERSION : ""
-def script_dir = "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 pipeline {
     agent any
@@ -11,7 +10,10 @@ pipeline {
         stage('Build dc-ui container') {
             steps {
                 script {
-                    sh "docker build -t es-home "$script_dir/.." -f "$script_dir/Dockerfile""
+                    sh """
+                    script_dir = "$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+                    docker build -t es-home "$script_dir/.." -f "$script_dir/Dockerfile"
+                    """
                 }
             }
         }
