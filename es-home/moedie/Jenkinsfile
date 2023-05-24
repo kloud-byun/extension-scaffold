@@ -1,57 +1,27 @@
-def registry = 'artifacts.trmc.osd.mil/minerva-docker'
-def base = 'extension-scaffold/es-home'
-def trmc_image_version = params.TRMC_IMAGE_VERSION ? params.TRMC_IMAGE_VERSION : ""
-
 pipeline {
-  agent any
-  environment {
-      VERSION_FROM_GIT_TAG = sh(script: "git describe --tags --exact-match --match 'es-*' | sed -e s/es-//", returnStdout: true).trim()
-  }
-  options {
-    buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '7', numToKeepStr: '5')
-  }
-  parameters {
-    string(name: 'TRMC_IMAGE_VERSION', description: 'If set, tag and push into TRMC', trim: true)
-  }
-  stages {
-    stage('Check release') {
-      when {
-        branch "release*"
-      }
-      steps {
-        echo 'Checking release...'
-        script {
-          if (!env.VERSION_FROM_GIT_TAG) {
-              error('Branch `release` does not refer to a tag')
-          }
-          trmc_image_version = env.VERSION_FROM_GIT_TAG
-          echo "Setting TRMC_IMAGE_VERSION to ${VERSION_FROM_GIT_TAG}"
+    agent any
+    
+    stages {
+
+        stage('Check Release'){
+
+            steps {
+                echo 'checking the release...'
+            }
         }
-      }
-    }
-    stage('Build es-home container') {
-      steps {
-        echo 'Building es-home container...'
-        script {
-          withCredentials([file(credentialsId: 'trmc-npmrc', variable: 'NPMRC')]) {
-            def tag_image_ops = trmc_image_version.isEmpty() ? "" : ":${trmc_image_version}"
-            def image = docker.build("${registry}/moesol/${base}${tag_image_ops}", "-f extension-scaffold/es-home/Dockerfile .")
-          }
+
+        stage('Build es-home container'){
+
+            steps {
+                echo 'building the application...'
+            }
         }
-      }
-    }
-    stage('Push to TRMC') {
-      when {
-        not { expression { return trmc_image_version.isEmpty() } }
-      }
-      steps {
-        script {
-          def image = "${registry}/moesol/${base}:${trmc_image_version}"
-          docker.withRegistry("https://${registry}", 'trmc-artifactory') {
-            sh "docker push ${image}"
-          }
+
+        stage('Deploy on dev26'){
+
+            steps {
+                echo 'building the application...'
+            }
         }
-      }
     }
-  }
 }
