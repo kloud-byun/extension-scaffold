@@ -5,11 +5,23 @@ def trmc_image_version = params.TRMC_IMAGE_VERSION ? params.TRMC_IMAGE_VERSION :
 
 pipeline {
     agent any
-
+    environment {
+        VERSION_FROM_GIT_TAG = sh(script: "git describe --tags --exact-match --match 'es-*' | sed -e s/es-//", returnStdout: true).trim()
+    }
+    options {
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '7', numToKeepStr: '5')
+    }
+    parameters {
+        string(name: 'TRMC_IMAGE_VERSION', description: 'If set, tag and push into TRMC', trim: true)
+    }
     stages {
         stage('Build es-home container') {
             steps {
-                echo 'building stuff here...'
+                script {
+                    sh '''
+                    docker build -t es-home /home/extension-scaffold/es-home
+                    '''
+                }
             }
         }
         stage('built-in echo testing'){
