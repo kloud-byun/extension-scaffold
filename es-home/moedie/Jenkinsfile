@@ -9,9 +9,7 @@ pipeline {
     stages {
         stage('Build es-home container') {
             steps {
-                script {
-                    sh "docker build -t es-home \"\$WORKSPACE\" -f \"\$WORKSPACE/Dockerfile\""
-                }
+                echo 'building stuff here...'
             }
         }
         stage('built-in echo testing'){
