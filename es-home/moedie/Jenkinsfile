@@ -15,6 +15,24 @@ pipeline {
         string(name: 'TRMC_IMAGE_VERSION', description: 'If set, tag and push into TRMC', trim: true)
     }
     stages {
+        // Checking Release
+        /*
+        stage('Check release') {
+            when {
+                branch "release*"
+            }
+            steps {
+                script {
+                if (!env.VERSION_FROM_GIT_TAG) {
+                    error('Branch `release` does not refer to a tag')
+                }
+                trmc_image_version = env.VERSION_FROM_GIT_TAG
+                echo "Setting TRMC_IMAGE_VERSION to ${VERSION_FROM_GIT_TAG}"
+                }
+            }
+        }
+        */
+        // Building the container
         stage('Build es-home container') {
             steps {
                 script {
@@ -24,12 +42,7 @@ pipeline {
                 }
             }
         }
-        stage('built-in echo testing'){
-            steps {
-                echo 'testing built-in echo...'
-            }
-        }
-
+        // Pushing to TRMC?
         stage('shared-library testEcho'){
             steps {
                 testEcho()
