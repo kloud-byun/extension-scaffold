@@ -19,7 +19,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    docker build -t es-home /home/extension-scaffold/es-home
+                    docker build -t es-home ./es-home
                     '''
                 }
             }
