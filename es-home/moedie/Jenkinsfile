@@ -1,6 +1,6 @@
 @Library('es-jenkins-shared') _
 def registry = 'artifacts.trmc.osd.mil/minerva-docker'
-def base = 'extension-scaffold/es-home'
+def base = 'es-home'
 def trmc_image_version = params.TRMC_IMAGE_VERSION ? params.TRMC_IMAGE_VERSION : ""
 
 pipeline {
@@ -36,11 +36,27 @@ pipeline {
         stage('Build es-home container') {
             steps {
                 script {
-                    buildContainer()
+                    sh '''
+                    docker build -t es-home ./es-home
+                    '''
                 }
             }
         }
         // Pushing to TRMC?
+        stage('Push to TRMC') {
+            when {
+                not { expression { return trmc_image_version.isEmpty() } }
+            }
+            steps {
+                script {
+                def image = "${registry}/extension-scaffold/${base}:${trmc_image_version}"
+                docker.withRegistry("https://${registry}", 'trmc-artifactory') {
+                    sh "podman push ${image}"
+                }
+                }
+            }
+        }
+        // testing shared-library
         stage('shared-library testEcho'){
             steps {
                 testEcho()
