@@ -50,6 +50,9 @@ pipeline {
             steps {
                 script {
                     def image = "${registry}/extension-scaffold/${base}:${trmc_image_version}"
+                    sh '''
+                    docker tag es-home ${image}
+                    '''
                     docker.withRegistry("https://${registry}", 'trmc-artifactory') {
                         sh "podman push ${image}"
                     }
